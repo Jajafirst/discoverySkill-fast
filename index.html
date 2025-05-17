@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🍔 Discovery Skill Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fff7ed 0%, #fff1e0 100%);
+            font-family: 'Prompt', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .lang-toggle {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .lang-toggle img {
+            width: 30px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .box {
+            background: #fff;
+            border: 4px solid #ffb703;
+            border-radius: 30px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 740px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .title {
+            font-weight: 700;
+            font-size: 32px;
+            text-align: center;
+            color: #e76f51;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .input-group label {
+            background-color: #f4a261;
+            color: white;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 20px 0 0 20px;
+            width: 100px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid #f4a261;
+            border-radius: 0 20px 20px 0;
+            font-size: 15px;
+        }
+
+        .question-block {
+            background: #fff8ed;
+            border: 2px dashed #f4a261;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .btn-group button {
+            background: #f77f00;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 15px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            opacity: 0.8;
+        }
+
+        .btn-group button.selected {
+            background: #e76f51;
+            opacity: 1;
+            border: 2px solid #c94b2b;
+        }
+
+        .submit-btn {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .submit-btn button {
+            background: #2a9d8f;
+            color: white;
+            font-weight: 600;
+            padding: 14px 36px;
+            border: none;
+            border-radius: 40px;
+            font-size: 17px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .tip {
+            background: #fff3cd;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 24px;
+            font-size: 15px;
+            color: #5c432d;
+            line-height: 1.6;
+        }
+
+        #resultBox img {
+            max-width: 220px;
+            display: block;
+            margin: 20px auto 10px;
+        }
+
+        #resultTitle {
+            text-align: center;
+            font-size: 24px;
+            color: #264653;
+            margin-top: 10px;
+        }
+
+        /* Responsive Chart Container */
+        .chart-container {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
+            margin: 30px auto;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lang-toggle">
+        <img src="https://flagcdn.com/th.svg" onclick="setLang('th')" />
+        <img src="https://flagcdn.com/gb.svg" onclick="setLang('en')" />
+    </div>
+
+    <div class="box">
+        <div class="title">🍟 Discovery Skill Test</div>
+        <div class="subtitle" id="subText">Fast & fun personality test for tech lovers</div>
+        <div class="input-group">
+            <label id="nameLabel">NAME</label><input type="text" />
+        </div>
+        <div class="input-group">
+            <label id="ageLabel">AGE</label><input type="text" />
+        </div>
+        <div class="input-group">
+            <label id="schoolLabel">SCHOOL</label><input type="text" />
+        </div>
+    </div>
+
+    <div class="box" id="questionBox"></div>
+
+    <div class="submit-btn">
+        <button onclick="showResult()">🍔 Submit</button>
+    </div>
+
+    <div class="box" id="resultBox" style="display:none">
+        <h2 id="resultTitle"></h2>
+        <img id="resultImage" src="" alt="Result Character" />
+        <div id="resultTips" class="tip"></div>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let submitted = false;
+        let currentLang = 'en';
+
+        const lang = {
+            en: {
+                title: "Welcome to Discovery Skill Test",
+                name: "NAME",
+                age: "AGE",
+                school: "SCHOOL",
+                yes: "YES",
+                no: "NO",
+                subtitle: "Fast & fun personality test for tech lovers",
+                result: "You are best suited for: "
+            },
+            th: {
+                title: "ยินดีต้อนรับสู่แบบทดสอบค้นหาทักษะ",
+                name: "ชื่อ",
+                age: "อายุ",
+                school: "โรงเรียน",
+                yes: "ใช่",
+                no: "ไม่ใช่",
+                subtitle: "ค้นหาว่าคุณเหมาะกับสายเทคไหนที่สุด 🍟",
+                result: "คุณเหมาะกับสายนี้ที่สุด: "
+            }
+        };
+
+        const tips = {
+            "Full Stack Dev": {
+                en: "💡 Learn: HTML, CSS, JavaScript<br>🛠 Tools: GitHub, Firebase<br>📌 Projects: Blog, Todo App",
+                th: "💡 เรียนรู้: HTML, CSS, JavaScript<br>🛠 เครื่องมือ: GitHub, Firebase<br>📌 โปรเจกต์: เว็บบล็อก, To-do App"
+            },
+            "UX/UI Design": {
+                en: "💡 Learn: Figma, Adobe XD<br>🛠 Tools: Canva, Webflow<br>📌 Projects: Redesign an app",
+                th: "💡 เรียนรู้: Figma, Adobe XD<br>🛠 เครื่องมือ: Canva, Webflow<br>📌 โปรเจกต์: รีดีไซน์แอป"
+            },
+            "Data Science": {
+                en: "💡 Learn: Python, Pandas<br>🛠 Tools: Jupyter, Kaggle<br>📌 Projects: Analyze survey data",
+                th: "💡 เรียนรู้: Python, Pandas<br>🛠 เครื่องมือ: Jupyter, Kaggle<br>📌 โปรเจกต์: วิเคราะห์ข้อมูลแบบสำรวจ"
+            },
+            "Robotics": {
+                en: "💡 Learn: Arduino, Raspberry Pi<br>🛠 Tools: Tinkercad, Robot kits<br>📌 Projects: Smart car",
+                th: "💡 เรียนรู้: Arduino, Raspberry Pi<br>🛠 เครื่องมือ: Tinkercad, ชุดหุ่นยนต์<br>📌 โปรเจกต์: รถอัจฉริยะ"
+            },
+            "Game Dev": {
+                en: "💡 Learn: Unity, C#<br>🛠 Tools: Scratch, Roblox Studio<br>📌 Projects: Platformer",
+                th: "💡 เรียนรู้: Unity, C#<br>🛠 เครื่องมือ: Scratch, Roblox Studio<br>📌 โปรเจกต์: เกมแนว platformer"
+            }
+        };
+
+        const images = {
+            "Full Stack Dev": "dev.PNG",
+            "UX/UI Design": "uxui.PNG",
+            "Data Science": "data.PNG",
+            "Robotics": "robot.PNG",
+            "Game Dev": "game.PNG"
+        };
+
+        const questionList = {
+            en: [
+                "Do you like building robots or machines?",
+                "Do you like making things look good?",
+                "Are you curious how websites work?",
+                "Do you enjoy working with data?",
+                "Do you love video games and making them?",
+                "Do you enjoy solving logic puzzles?",
+                "Would you like to design app screens and layouts?",
+                "Do you want to program robots to work automatically?",
+                "Do you like drawing characters or maps?",
+                "Are you interested in sensors and how machines work?"
+            ],
+            th: [
+                "คุณชอบสร้างหุ่นยนต์หรือเครื่องจักรไหม?",
+                "คุณชอบทำสิ่งต่าง ๆ ให้ดูสวยงามไหม?",
+                "คุณสงสัยไหมว่าเว็บไซต์ทำงานอย่างไร?",
+                "คุณสนุกกับการทำงานกับข้อมูลไหม?",
+                "คุณชอบวิดีโอเกมและอยากสร้างเกมไหม?",
+                "คุณชอบแก้ปริศนาทางตรรกะไหม?",
+                "คุณอยากออกแบบหน้าจอแอปหรือไม่?",
+                "คุณอยากเขียนโปรแกรมให้หุ่นยนต์ทำงานอัตโนมัติไหม?",
+                "คุณชอบวาดตัวละครหรือแผนที่ไหม?",
+                "คุณสนใจเซ็นเซอร์และการทำงานของเครื่องจักรไหม?"
+            ]
+        };
+
+        const answers = [
+            { Robotics: 4 },
+            { "UX/UI Design": 4 },
+            { "Full Stack Dev": 4 },
+            { "Data Science": 4 },
+            { "Game Dev": 4 },
+            { "Full Stack Dev": 3, "Data Science": 2 },
+            { "UX/UI Design": 4 },
+            { Robotics: 4 },
+            { "Game Dev": 3, "UX/UI Design": 2 },
+            { Robotics: 4 }
+        ];
+
+        const scores = {
+            Robotics: 0,
+            "UX/UI Design": 0,
+            "Full Stack Dev": 0,
+            "Data Science": 0,
+            "Game Dev": 0
+        };
+
+        function setLang(l) {
+            currentLang = l;
+
+            // Update all UI text
+            document.getElementById("nameLabel").innerText = lang[l].name;
+            document.getElementById("ageLabel").innerText = lang[l].age;
+            document.getElementById("schoolLabel").innerText = lang[l].school;
+            document.getElementById("subText").innerText = lang[l].subtitle;
+
+            // If previously submitted, reset everything
+            if (submitted) {
+                submitted = false;
+
+                // Reset scores
+                for (let key in scores) {
+                    scores[key] = 0;
+                }
+
+                // Hide result
+                document.getElementById("resultBox").style.display = "none";
+
+                // Clear button states
+                document.querySelectorAll(".btn-group button").forEach(btn => {
+                    btn.classList.remove("selected");
+                    btn.disabled = false;
+                });
+            }
+
+            renderQuestions();
+        }
+
+        function handleAnswer(idx, value) {
+            if (submitted) return;
+            const point = answers[idx];
+            for (let key in scores) {
+                scores[key] -= point[key] || 0;
+            }
+            if (value === 'yes') {
+                for (let key in point) {
+                    scores[key] += point[key];
+                }
+            }
+            const buttons = document.querySelectorAll(`#q${idx} .btn-group button`);
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            buttons[value === 'yes' ? 1 : 0].classList.add('selected');
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById("questionBox");
+            container.innerHTML = "";
+            questionList[currentLang].forEach((q, i) => {
+                const block = document.createElement("div");
+                block.className = "question-block";
+                block.id = `q${i}`;
+                block.innerHTML = `
+          <div class="question-text">${i + 1}. ${q}</div>
+          <div class="btn-group">
+            <button onclick="handleAnswer(${i}, 'no')">${lang[currentLang].no}</button>
+            <button onclick="handleAnswer(${i}, 'yes')">${lang[currentLang].yes}</button>
+          </div>
+        `;
+                container.appendChild(block);
+            });
+        }
+
+        function showResult() {
+            submitted = true;
+            document.querySelectorAll(".btn-group button").forEach(btn => btn.disabled = true);
+
+            const topSkill = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+
+            document.getElementById("resultBox").style.display = "block";
+            document.getElementById("resultTitle").innerText = lang[currentLang].result + topSkill;
+            document.getElementById("resultImage").src = images[topSkill];
+            document.getElementById("resultTips").innerHTML = tips[topSkill][currentLang];
+
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(scores),
+                    datasets: [{
+                        data: Object.values(scores),
+                        backgroundColor: ['#e63946', '#f4a261', '#2a9d8f', '#f77f00', '#ffbe0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Get input values
+            const name = document.querySelector('input').value;
+            const age = document.querySelectorAll('input')[1].value;
+            const school = document.querySelectorAll('input')[2].value;
+            const languageUsed = currentLang === 'en' ? "English" : "Thai";
+
+            // ✅ Send to Google Apps Script
+            sendToAppsScript(name, age, school, topSkill, languageUsed);
+
+            // ✅ Optional: Send to Google Form (if you're using both)
+            const formData = new FormData();
+            formData.append("entry.728517839", name);
+            formData.append("entry.1916366540", age);
+            formData.append("entry.142364065", school);
+            formData.append("entry.957559116", topSkill);
+            formData.append("entry.2030034990", languageUsed);
+
+            fetch("https://docs.google.com/forms/d/e/1FAIpQLScpBty-tnHsPIBifXDZves6dWYYIwGop8kYOGqZCuBaI_Hf-Q/formResponse", {
+                method: "POST",
+                mode: "no-cors",
+                body: formData
+            }).then(() => {
+                console.log("✅ Google Form submitted");
+            }).catch(err => {
+                console.warn("❌ Google Form error:", err);
+            });
+        }
+
+        function sendToAppsScript(name, age, school, result, languageUsed) {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwmS8VtCVy1Cm_1BwzJGDljG8Bod0EoHvn-CJ-u9C6UmigLjeVTiIeDfA4sK_utRgkjnw/exec';
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('age', age);
+            formData.append('school', school);
+            formData.append('result', result);
+            formData.append('language', languageUsed);
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: formData
+            })
+                .then(() => {
+                    console.log("✅ Submitted to Google Sheet!");
+                    alert("Thank you! Your result has been saved.");
+                })
+                .catch(error => {
+                    console.error("❌ Error sending to Google Sheet:", error.message);
+                    alert("Submission failed. Please try again.");
+                });
+        }
+
+        setLang("en");
+    </script>
+</body>
+
+</html>
