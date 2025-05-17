@@ -6,123 +6,149 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🍔 Discovery Skill Test</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="./style.css"> -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --main-orange: #f4a261;
+            --highlight-orange: #f77f00;
+            --deep-orange: #e76f51;
+            --green: #2a9d8f;
+            --yellow: #ffb703;
+            --soft-bg: #fff8ed;
+        }
+
         body {
             background: linear-gradient(135deg, #fff7ed 0%, #fff1e0 100%);
             font-family: 'Prompt', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
         }
 
         .lang-toggle {
             text-align: right;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .lang-toggle img {
-            width: 30px;
+            width: 28px;
             margin-left: 10px;
             cursor: pointer;
         }
 
         .box {
             background: #fff;
-            border: 4px solid #ffb703;
-            border-radius: 30px;
-            padding: 30px;
-            margin: 20px auto;
-            max-width: 740px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border: 4px solid var(--yellow);
+            border-radius: 24px;
+            padding: 24px;
+            margin: 16px auto;
+            max-width: 720px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         }
 
         .title {
             font-weight: 700;
-            font-size: 32px;
+            font-size: 28px;
             text-align: center;
-            color: #e76f51;
-            margin-bottom: 10px;
+            color: var(--deep-orange);
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
 
         .subtitle {
             text-align: center;
-            font-size: 18px;
+            font-size: 16px;
             color: #666;
             margin-bottom: 20px;
         }
 
         .input-group {
             display: flex;
-            align-items: center;
-            margin: 10px 0;
+            flex-direction: column;
+            margin: 16px 0;
+            width: 100%;
         }
 
         .input-group label {
             background-color: #f4a261;
             color: white;
             font-weight: 600;
-            padding: 10px 16px;
-            border-radius: 20px 0 0 20px;
-            width: 100px;
+            font-size: clamp(14px, 2.5vw, 18px);
+            padding: 14px 0px;
+            text-align: center;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
         }
 
         .input-group input {
-            flex: 1;
-            padding: 10px 16px;
+            padding: 14px 16px;
             border: 2px solid #f4a261;
-            border-radius: 0 20px 20px 0;
-            font-size: 15px;
+            border-top: none;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            font-size: clamp(14px, 2.5vw, 18px);
+            background-color: #fffbe6;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .question-block {
-            background: #fff8ed;
-            border: 2px dashed #f4a261;
+            background: var(--soft-bg);
+            border: 2px dashed var(--main-orange);
             border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
             text-align: center;
         }
 
         .question-text {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn-group button {
-            background: #f77f00;
+            background: var(--highlight-orange);
             border: none;
             color: white;
-            padding: 10px 24px;
-            border-radius: 30px;
+            padding: 10px 22px;
+            border-radius: 25px;
             font-weight: bold;
-            font-size: 15px;
-            margin: 0 10px;
+            font-size: 14px;
             cursor: pointer;
             transition: 0.2s;
-            opacity: 0.8;
+            opacity: 0.85;
         }
 
         .btn-group button.selected {
-            background: #e76f51;
+            background: var(--deep-orange);
             opacity: 1;
             border: 2px solid #c94b2b;
         }
 
         .submit-btn {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 24px;
         }
 
         .submit-btn button {
-            background: #2a9d8f;
+            background: var(--green);
             color: white;
             font-weight: 600;
-            padding: 14px 36px;
+            padding: 12px 30px;
             border: none;
             border-radius: 40px;
-            font-size: 17px;
+            font-size: 16px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
@@ -131,36 +157,56 @@
             background: #fff3cd;
             border-radius: 12px;
             padding: 18px;
-            margin-top: 24px;
-            font-size: 15px;
+            margin-top: 20px;
+            font-size: 14px;
             color: #5c432d;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         #resultBox img {
-            max-width: 220px;
+            max-width: 180px;
             display: block;
-            margin: 20px auto 10px;
+            margin: 20px auto 12px;
         }
 
         #resultTitle {
             text-align: center;
-            font-size: 24px;
+            font-size: 22px;
             color: #264653;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
-        /* Responsive Chart Container */
         .chart-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 360px;
             aspect-ratio: 1 / 1;
-            margin: 30px auto;
+            margin: 24px auto;
         }
 
         canvas {
             width: 100% !important;
             height: 100% !important;
+        }
+
+        @media (max-width: 500px) {
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .input-group label,
+            .input-group input {
+                border-radius: 20px;
+                width: 100%;
+            }
+
+            .input-group label {
+                border-radius: 20px 20px 0 0;
+            }
+
+            .input-group input {
+                border-radius: 0 0 20px 20px;
+            }
         }
     </style>
 </head>
@@ -229,24 +275,44 @@
 
         const tips = {
             "Full Stack Dev": {
-                en: "💡 Learn: HTML, CSS, JavaScript<br>🛠 Tools: GitHub, Firebase<br>📌 Projects: Blog, Todo App",
-                th: "💡 เรียนรู้: HTML, CSS, JavaScript<br>🛠 เครื่องมือ: GitHub, Firebase<br>📌 โปรเจกต์: เว็บบล็อก, To-do App"
+                en: `💡 Learn: HTML, CSS, JavaScript, Node.js<br>
+             🛠 Tools: VS Code, GitHub, Express, MongoDB, Firebase<br>
+             📌 Projects: Build a portfolio website, a full-stack blog, or a task manager app`,
+                th: `💡 เรียนรู้: HTML, CSS, JavaScript, Node.js<br>
+             🛠 เครื่องมือ: VS Code, GitHub, Express, MongoDB, Firebase<br>
+             📌 โปรเจกต์: สร้างเว็บไซต์ผลงาน, เว็บบล็อก, หรือแอปจัดการงาน`
             },
             "UX/UI Design": {
-                en: "💡 Learn: Figma, Adobe XD<br>🛠 Tools: Canva, Webflow<br>📌 Projects: Redesign an app",
-                th: "💡 เรียนรู้: Figma, Adobe XD<br>🛠 เครื่องมือ: Canva, Webflow<br>📌 โปรเจกต์: รีดีไซน์แอป"
+                en: `💡 Learn: Design principles, wireframing, prototyping<br>
+             🛠 Tools: Figma, Adobe XD, Notion, Webflow<br>
+             📌 Projects: Redesign a mobile app, create a UI kit, or build a personal design system`,
+                th: `💡 เรียนรู้: หลักการออกแบบ, การทำ wireframe และ prototype<br>
+             🛠 เครื่องมือ: Figma, Adobe XD, Notion, Webflow<br>
+             📌 โปรเจกต์: รีดีไซน์แอป, สร้าง UI kit หรือระบบออกแบบส่วนตัว`
             },
             "Data Science": {
-                en: "💡 Learn: Python, Pandas<br>🛠 Tools: Jupyter, Kaggle<br>📌 Projects: Analyze survey data",
-                th: "💡 เรียนรู้: Python, Pandas<br>🛠 เครื่องมือ: Jupyter, Kaggle<br>📌 โปรเจกต์: วิเคราะห์ข้อมูลแบบสำรวจ"
+                en: `💡 Learn: Python, Pandas, NumPy, Matplotlib, Machine Learning basics<br>
+             🛠 Tools: Jupyter Notebook, Google Colab, Kaggle<br>
+             📌 Projects: Analyze real datasets, build prediction models, or visualize trends`,
+                th: `💡 เรียนรู้: Python, Pandas, NumPy, พื้นฐาน Machine Learning<br>
+             🛠 เครื่องมือ: Jupyter Notebook, Google Colab, Kaggle<br>
+             📌 โปรเจกต์: วิเคราะห์ข้อมูลจริง, สร้างโมเดลพยากรณ์, หรือทำ data visualization`
             },
             "Robotics": {
-                en: "💡 Learn: Arduino, Raspberry Pi<br>🛠 Tools: Tinkercad, Robot kits<br>📌 Projects: Smart car",
-                th: "💡 เรียนรู้: Arduino, Raspberry Pi<br>🛠 เครื่องมือ: Tinkercad, ชุดหุ่นยนต์<br>📌 โปรเจกต์: รถอัจฉริยะ"
+                en: `💡 Learn: Arduino, C++, sensors & motors, embedded systems<br>
+             🛠 Tools: Arduino IDE, Tinkercad, Raspberry Pi, Robot kits<br>
+             📌 Projects: Build a line-following robot, automate a smart car, or simulate with Tinkercad`,
+                th: `💡 เรียนรู้: Arduino, C++, การใช้งาน sensor และ motor<br>
+             🛠 เครื่องมือ: Arduino IDE, Tinkercad, Raspberry Pi, ชุดหุ่นยนต์<br>
+             📌 โปรเจกต์: สร้างหุ่นยนต์เดินตามเส้น, หรือจำลองใน Tinkercad`
             },
             "Game Dev": {
-                en: "💡 Learn: Unity, C#<br>🛠 Tools: Scratch, Roblox Studio<br>📌 Projects: Platformer",
-                th: "💡 เรียนรู้: Unity, C#<br>🛠 เครื่องมือ: Scratch, Roblox Studio<br>📌 โปรเจกต์: เกมแนว platformer"
+                en: `💡 Learn: Unity, C#, game design logic, 2D/3D assets<br>
+             🛠 Tools: Unity Hub, Blender (for 3D), Scratch (for basics)<br>
+             📌 Projects: Create a platformer game, design game UI/UX, or build a character animation`,
+                th: `💡 เรียนรู้: Unity, C#, การออกแบบเกม, การใช้ asset 2D/3D<br>
+             🛠 เครื่องมือ: Unity Hub, Blender (สำหรับ 3D), Scratch (สำหรับพื้นฐาน)<br>
+             📌 โปรเจกต์: สร้างเกม platformer, ออกแบบ UI/UX เกม, หรือทำ animation ตัวละคร`
             }
         };
 
@@ -286,48 +352,56 @@
         };
 
         const answers = [
-            { Robotics: 4 },
+            { "Robotics": 4 },
             { "UX/UI Design": 4 },
             { "Full Stack Dev": 4 },
             { "Data Science": 4 },
             { "Game Dev": 4 },
             { "Full Stack Dev": 3, "Data Science": 2 },
             { "UX/UI Design": 4 },
-            { Robotics: 4 },
+            { "Robotics": 4 },
             { "Game Dev": 3, "UX/UI Design": 2 },
-            { Robotics: 4 }
+            { "Robotics": 4 }
         ];
 
         const scores = {
-            Robotics: 0,
+            "Robotics": 0,
             "UX/UI Design": 0,
             "Full Stack Dev": 0,
             "Data Science": 0,
             "Game Dev": 0
         };
+        function calculateScores() {
+            Object.keys(scores).forEach(key => scores[key] = 0);
+            questions.forEach((q, i) => {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected?.value === "yes") {
+                    for (const [key, val] of Object.entries(q.a)) {
+                        scores[key] += val;
+                    }
+                }
+            });
+        }
 
         function setLang(l) {
             currentLang = l;
 
-            // Update all UI text
             document.getElementById("nameLabel").innerText = lang[l].name;
             document.getElementById("ageLabel").innerText = lang[l].age;
             document.getElementById("schoolLabel").innerText = lang[l].school;
             document.getElementById("subText").innerText = lang[l].subtitle;
 
-            // If previously submitted, reset everything
             if (submitted) {
                 submitted = false;
 
-                // Reset scores
+
                 for (let key in scores) {
                     scores[key] = 0;
                 }
 
-                // Hide result
                 document.getElementById("resultBox").style.display = "none";
 
-                // Clear button states
+
                 document.querySelectorAll(".btn-group button").forEach(btn => {
                     btn.classList.remove("selected");
                     btn.disabled = false;
@@ -373,33 +447,59 @@
 
         function showResult() {
             submitted = true;
-            document.querySelectorAll(".btn-group button").forEach(btn => btn.disabled = true);
+            Object.keys(scores).forEach(k => scores[k] = 0);
+
+            questionList.en.forEach((_, i) => {
+                const isYes = document.querySelector(`.question-block:nth-child(${i + 1}) .btn-group button:nth-child(2)`).classList.contains("selected");
+                if (isYes) {
+                    for (const [k, v] of Object.entries(answers[i])) {
+                        scores[k] += v;
+                    }
+                }
+            });
+
+            Object.keys(scores).forEach(key => scores[key] = 0);
+
+            answers.forEach((ans, i) => {
+                const selected = document.querySelector(`#q${i} .btn-group button.selected`);
+                if (selected && selected.textContent.trim().toLowerCase() === lang[currentLang].yes.toLowerCase()) {
+                    for (let [key, val] of Object.entries(ans)) {
+                        scores[key] += val;
+                    }
+                }
+            });
+
 
             const topSkill = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
-
             document.getElementById("resultBox").style.display = "block";
             document.getElementById("resultTitle").innerText = lang[currentLang].result + topSkill;
             document.getElementById("resultImage").src = images[topSkill];
             document.getElementById("resultTips").innerHTML = tips[topSkill][currentLang];
 
-            const ctx = document.getElementById('pieChart').getContext('2d');
-            new Chart(ctx, {
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            const dataPercent = Object.values(scores).map(v => total ? Math.round((v / total) * 100) : 0);
+
+            new Chart(document.getElementById('pieChart'), {
                 type: 'pie',
                 data: {
-                    labels: Object.keys(scores),
+                    labels: Object.keys(scores).map((k, i) => `${k} (${dataPercent[i]}%)`),
                     datasets: [{
-                        data: Object.values(scores),
-                        backgroundColor: ['#e63946', '#f4a261', '#2a9d8f', '#f77f00', '#ffbe0b']
+                        data: dataPercent,
+                        backgroundColor: ['#e63946', '#f4a261', '#2a9d8f', '#fcbf49', '#ffbe0b'],
+                        borderColor: '#fff',
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
                     plugins: {
                         legend: { position: 'bottom' }
                     }
                 }
             });
+
+
+
 
             // Get input values
             const name = document.querySelector('input').value;
@@ -447,10 +547,10 @@
                     console.log("✅ Submitted to Google Sheet!");
                     alert("Thank you! Your result has been saved.");
                 })
-                .catch(error => {
-                    console.error("❌ Error sending to Google Sheet:", error.message);
-                    alert("Submission failed. Please try again.");
-                });
+            // .catch(error => {
+            //     console.error("❌ Error sending to Google Sheet:", error.message);
+            //     alert("Submission failed. Please try again.");
+            // });
         }
 
         setLang("en");
